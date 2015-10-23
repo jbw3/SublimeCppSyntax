@@ -1,0 +1,116 @@
+%YAML 1.2
+---
+name: C++14
+file_extentions: [cpp, h, hpp]
+scope: source.c++
+
+contexts:
+  main:
+    - include: lineComment
+    - include: beginBlockComment
+    - include: controlKeywords
+    - include: castOperatorKeywords
+    - include: operatorKeywords
+    - include: storageTypes
+    - include: storageModifiers
+    - include: languageConstants
+    - include: supportTypes
+    - include: supportConstants
+    - include: languageVariables
+    - include: beginString
+    - include: beginRawString
+    - include: beginCharLiteral
+
+  lineComment:
+    - match: //.*
+      scope: comment.line.double-slash.c++
+
+  beginBlockComment:
+    - match: (?=/\*)
+      push: blockComment
+
+  blockComment:
+    - meta_scope: comment.block.c++
+    - match: (?<!/)\*/
+      pop: true
+
+  controlKeywords:
+    - match: \b(?:alignas|alignof|asm|break|case|catch|continue|default|delete|do|else|explicit|export|extern|for|friend|goto|if|inline|new|noexcept|operator|private|protected|public|return|sizeof|static_assert|switch|throw|try|typedef|using|virtual|while)\b
+      scope: keyword.control.c++
+
+  castOperatorKeywords:
+    - match: \b(?:const_cast|dynamic_cast|reinterpret_cast|static_cast)\b
+      scope: keyword.operator.cast.c++
+
+  operatorKeywords:
+    - match: \b(?:and|and_eq|bitand|bitor|compl|not|not_eq|or|or_eq|typeid|xor|xor_eq)\b
+      scope: keyword.operator.c++
+
+  storageTypes:
+    - match: \b(?:auto|bool|char|char16_t|char32_t|decltype|double|float|int|long|short|signed|unsigned|void|wchar_t)\b
+      scope: storage.type.c++
+
+  storageModifiers:
+    - match: \b(?:const|constexpr|mutable|register|static|thread_local|typename|volatile)\b
+      scope: storage.modifier.c++
+
+  languageConstants:
+    - match: \b(?:__func__|false|nullptr|true)\b
+      scope: constant.language.c++
+
+  supportTypes:
+    - match: \b(?:int8_t|int16_t|int32_t|int64_t|int_fast8_t|int_fast16_t|int_fast32_t|int_fast64_t|int_least8_t|int_least16_t|int_least32_t|int_least64_t|intmax_t|intptr_t|size_t|uint|uint8_t|uint16_t|uint32_t|uint64_t|uint_fast8_t|uint_fast16_t|uint_fast32_t|uint_fast64_t|uint_least8_t|uint_least16_t|uint_least32_t|uint_least64_t|uintmax_t|uintptr_t)\b
+      scope: support.type.c++
+
+  supportConstants:
+    - match: \b(?:__FILE__|__FUNCTION__|__LINE__)\b
+      scope: support.constant.c++
+
+  languageVariables:
+    - match: \bthis\b
+      scope: variable.language.c++
+
+  escapeChars:
+    - match: \\(?:[\'"\?\\abfnrtv]|[0-7]{1,3}|x[\da-fA-F]+|u[\da-fA-F]{4}|U[\da-fA-F]{8})
+      scope: constant.character.escape.c++
+
+  invalidEscapeChars:
+    - match: \\(?:[^\'"\?\\abfnrtvxuU0-7]|x[^\da-fA-F]|u[\da-fA-F]{0,3}[^\da-fA-F]|U[\da-fA-F]{0,7}[^\da-fA-F])
+      scope: invalid.illegal.unknown-escape.c++
+
+  beginString:
+    - match: '(?:L|u8|u|U)?"'
+      scope: punctuation.definition.string.begin.c++
+      push: string
+
+  string:
+    - meta_scope: string.quoted.double.c++
+    - include: escapeChars
+    - include: invalidEscapeChars
+    - match: '"'
+      scope: punctuation.definition.string.end.c++
+      pop: true
+
+  beginRawString:
+    - match: '(?:L|u8|u|U)?R"([^\(\)\\ ]{0,16})\('
+      scope: punctuation.definition.string.begin.c++
+      push: rawString
+
+  rawString:
+    - meta_scope: string.quoted.double.c++
+    - match: '\)\1"'
+      scope: punctuation.definition.string.end.c++
+      pop: true
+
+  beginCharLiteral:
+    - match: "(?:L|u8|u|U)?'"
+      scope: punctuation.definition.string.begin.c++
+      push: charLiteral
+
+  charLiteral:
+    - meta_scope: string.quoted.single.c++
+    - include: escapeChars
+    - include: invalidEscapeChars
+    - match: "'"
+      scope: punctuation.definition.string.end.c++
+      pop: true

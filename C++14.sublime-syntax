@@ -4,6 +4,9 @@ name: C++14
 file_extentions: [cpp, h, hpp]
 scope: source.c++
 
+variables:
+  name: '[_a-zA-Z]\w*'
+
 contexts:
   main:
     - include: lineComment
@@ -20,6 +23,7 @@ contexts:
     - include: beginString
     - include: beginRawString
     - include: beginCharLiteral
+    - include: beginNamespace
 
   lineComment:
     - match: //.*
@@ -113,4 +117,18 @@ contexts:
     - include: invalidEscapeChars
     - match: "'"
       scope: punctuation.definition.string.end.c++
+      pop: true
+
+  beginNamespace:
+    - match: \bnamespace\b
+      captures:
+        0: keyword.control.c++
+      push: namespace
+
+  namespace:
+    - match: \b{{name}}\b
+      scope: entity.name.type.c++
+    - include: lineComment
+    - include: beginBlockComment
+    - match: (?=;|{)
       pop: true

@@ -6,6 +6,26 @@
 /* This is a block comment */
 // <- comment.block
 
+using namespace std;
+// <- keyword.control
+//    ^ keyword.control
+//              ^ entity.name.type
+
+namespace test // comment
+// <- keyword.control
+//        ^ entity.name.type
+//             ^ comment.line
+{
+}
+
+namespace xyz = /* comment */ x::y::z;
+// <- keyword.control
+//        ^ entity.name.type
+//              ^ comment.block
+//                            ^ entity.name.type
+//                               ^ entity.name.type
+//                                  ^ entity.name.type
+
 int main(int argc, char* argv[])
 {
     return 0;
@@ -165,7 +185,6 @@ void castKeywords()
 
     static_cast<int>(2.0);
     // <- keyword.operator.cast
-
 }
 
 void languageConstants()
@@ -193,5 +212,4 @@ void supportConstants()
 
     std::cout << __LINE__ << '\n';
     //           ^ support.constant
-
 }

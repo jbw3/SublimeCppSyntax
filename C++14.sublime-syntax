@@ -9,8 +9,9 @@ variables:
 
 contexts:
   main:
-    - include: lineComment
+    - include: beginLineComment
     - include: beginBlockComment
+    - include: preprocessor
     - include: controlKeywords
     - include: castOperatorKeywords
     - include: operatorKeywords
@@ -25,9 +26,21 @@ contexts:
     - include: beginCharLiteral
     - include: beginNamespace
 
+  beginLineComment:
+    - match: (?=//)
+      push: lineComment
+
   lineComment:
-    - match: //.*
-      scope: comment.line.double-slash.c++
+    - meta_scope: comment.line.double-slash.c++
+    - match: (?<!/)(?=//(?:/[^/]|!))
+      push: lineDocumentation
+    - match: $
+      pop: true
+
+  lineDocumentation:
+    - include: doxygen
+    - match: (?=$)
+      pop: true
 
   beginBlockComment:
     - match: (?=/\*)
@@ -35,8 +48,27 @@ contexts:
 
   blockComment:
     - meta_scope: comment.block.c++
+    - match: (?=/\*(?:\*[^\*]|!))
+      push: blockDocumentation
     - match: (?<!/)\*/
       pop: true
+
+  blockDocumentation:
+    - include: doxygen
+    - match: (?=\*/)
+      pop: true
+
+  doxygen:
+    - match: '[@\\](?:a|addindex|addtogroup|anchor|arg|attention|author|authors|b|brief|bug|c|callergraph|callgraph|category|cite|class|code|cond|copybrief|copydetails|copydoc|copyright|date|def|defgroup|deprecated|details|diafile|dir|docbookonly|dontinclude|dot|dotfile|e|else|elseif|em|endcode|endcond|enddocbookonly|enddot|endhtmlonly|endif|endinternal|endlatexonly|endlink|endmanonly|endmsc|endparblock|endrtfonly|endsecreflist|endverbatim|enduml|endxmlonly|enum|example|exception|extends|file|fn|headerfile|hidecallergraph|hidecallgraph|hideinitializer|htmlinclude|htmlonly|idlexcept|if|ifnot|image|implements|include|includelineno|ingroup|internal|invariant|interface|latexinclude|latexonly|li|line|link|mainpage|manonly|memberof|msc|mscfile|n|name|namespace|nosubgrouping|note|overload|p|package|page|par|paragraph|parblock|post|pre|private|privatesection|property|protected|protectedsection|protocol|public|publicsection|pure|ref|refitem|related|relates|relatedalso|relatesalso|remark|result|return|returns|retval|rtfonly|sa|secreflist|section|see|short|showinitializer|since|skip|skipline|snippet|startuml|struct|subpage|subsection|subsubsection|tableofcontents|test|throw|throws|todo|tparam|typedef|union|until|var|verbatim|verbinclude|version|vhdlflow|warning|weakgroup|xmlonly|xrefitem)\b'
+      scope: keyword.other.documentation.doxygen
+    - match: '([@\\]param)\b(?:\s*(\[(?:in|in,out|out)\]))?'
+      captures:
+        0: keyword.other.documentation.doxygen
+        1: keyword.other.documentation.doxygen
+
+  preprocessor:
+    - match: '#\s*(?:define|elif|else|endif|error|if|ifdef|ifndef|include|line|pragma|undef|warning)\b'
+      scope: keyword.control.preprocessor.c++
 
   controlKeywords:
     - match: \b(?:alignas|alignof|asm|break|case|catch|continue|default|delete|do|else|explicit|export|extern|for|friend|goto|if|inline|new|noexcept|operator|private|protected|public|return|sizeof|static_assert|switch|throw|try|typedef|using|virtual|while)\b
@@ -128,7 +160,7 @@ contexts:
   namespace:
     - match: \b{{name}}\b
       scope: entity.name.type.c++
-    - include: lineComment
+    - include: beginLineComment
     - include: beginBlockComment
     - match: (?=;|{)
       pop: true

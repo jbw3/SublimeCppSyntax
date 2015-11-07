@@ -34,10 +34,25 @@
 //  ^ keyword.other.documentation
 
 #include <iostream>
-// <- keyword.control.preprocessor.c++
+ // <- keyword.control.preprocessor.include
+//       ^ string.quoted.other.lt-gt.include
+
+#include "test.h"
+ // <- keyword.control.preprocessor.include
+//       ^ string.quoted.double.include
+
+#include \
+ <iostream>
+ // <- string.quoted.other.lt-gt.include
+
+#include /* comment */ <iostream> // another comment
+ // <- keyword.control.preprocessor.include
+//       ^ comment.block
+//                     ^ string.quoted.other.lt-gt.include
+//                                ^ comment.line
 
 #define A_MACRO 2
-// <- keyword.control.preprocessor.c++
+ // <- keyword.control.preprocessor.c++
 
 using namespace std;
 // <- keyword.control

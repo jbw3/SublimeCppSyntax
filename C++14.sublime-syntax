@@ -9,9 +9,12 @@ variables:
 
 contexts:
   main:
+    - include: beginPreprocessor
+    - include: nonPreproc
+
+  nonPreproc:
     - include: beginLineComment
     - include: beginBlockComment
-    - include: preprocessor
     - include: controlKeywords
     - include: castOperatorKeywords
     - include: operatorKeywords
@@ -66,9 +69,50 @@ contexts:
         0: keyword.other.documentation.doxygen
         1: keyword.other.documentation.doxygen
 
+  beginPreprocessor:
+    - match: (?=#)
+      push: preprocessor
+
   preprocessor:
-    - match: '#\s*(?:define|elif|else|endif|error|if|ifdef|ifndef|include|line|pragma|undef|warning)\b'
-      scope: keyword.control.preprocessor.c++
+    - match: '#\s*(define|elif|else|endif|error|if|ifdef|ifndef|line|pragma|undef|warning)\b'
+      captures:
+        1: keyword.control.preprocessor.c++
+    - include: beginInclude
+    - include: nonPreproc
+    - match: (?<!\\)\n
+      pop: true
+
+  beginInclude:
+    - match: '#\s*(include)\b'
+      captures:
+        1: keyword.control.preprocessor.include.c++
+      push: include
+
+  include:
+    - include: beginAngleBracketsInclude
+    - include: beginQuotesInclude
+    - include: beginLineComment
+    - include: beginBlockComment
+    - match: (?<!\\)(?=\n)
+      pop: true
+
+  beginAngleBracketsInclude:
+    - match: '<'
+      push: angleBracketsInclude
+
+  angleBracketsInclude:
+    - meta_scope: string.quoted.other.lt-gt.include.c++
+    - match: '>'
+      pop: true
+
+  beginQuotesInclude:
+    - match: '"'
+      push: quotesInclude
+
+  quotesInclude:
+    - meta_scope: string.quoted.double.include.c++
+    - match: '"'
+      pop: true
 
   controlKeywords:
     - match: \b(?:alignas|alignof|asm|break|case|catch|continue|default|delete|do|else|explicit|export|extern|for|friend|goto|if|inline|new|noexcept|operator|private|protected|public|return|sizeof|static_assert|switch|throw|try|typedef|using|virtual|while)\b

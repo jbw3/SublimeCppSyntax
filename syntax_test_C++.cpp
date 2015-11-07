@@ -6,6 +6,39 @@
 /* This is a block comment */
 // <- comment.block
 
+/** @brief */
+//  ^ keyword.other.documentation
+
+/*! @brief */
+//  ^ keyword.other.documentation
+
+/*! \brief */
+//  ^ keyword.other.documentation
+
+/**
+ * @param [in]
+// ^ keyword.other.documentation
+//        ^ keyword.other.documentation
+ * @param [out]
+// ^ keyword.other.documentation
+//        ^ keyword.other.documentation
+ * @param [in,out]
+// ^ keyword.other.documentation
+//        ^ keyword.other.documentation
+ */
+
+/// @details
+//  ^ keyword.other.documentation
+
+//! \details
+//  ^ keyword.other.documentation
+
+#include <iostream>
+// <- keyword.control.preprocessor.c++
+
+#define A_MACRO 2
+// <- keyword.control.preprocessor.c++
+
 using namespace std;
 // <- keyword.control
 //    ^ keyword.control

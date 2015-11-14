@@ -74,10 +74,30 @@ namespace xyz = /* comment */ x::y::z;
 //                               ^ entity.name.type
 //                                  ^ entity.name.type
 
+namespace n1
+//        ^ entity.name.type
+{
+namespace n2
+//        ^ entity.name.type
+{
+namespace n3
+//        ^ entity.name.type
+{
+void functionInNamespace();
+//   ^ entity.name.function
+}
+}
+}
+
 int main(int argc, char* argv[])
+// <- storage.type
+//  ^ entity.name.function
+//       ^ storage.type
+//                 ^ storage.type
 {
     return 0;
     // <- keyword.control
+    //     ^ constant.numeric
 }
 
 void strings()
@@ -292,4 +312,23 @@ void numericLiterals()
 
     float sci3 = 18e-12;
     //           ^ constant.numeric
+}
+
+void f1();
+//   ^ entity.name.function
+
+void f1()
+//   ^ entity.name.function
+{
+}
+
+int This_is_a_very_long_FUNCTION_name  ();
+//  ^ entity.name.function
+
+void x::y::z::functionInNamespace()
+//   ^ entity.name.function
+//      ^ entity.name.function
+//         ^ entity.name.function
+//            ^ entity.name.function
+{
 }

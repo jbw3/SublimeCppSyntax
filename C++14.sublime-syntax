@@ -28,6 +28,7 @@ contexts:
     - include: beginString
     - include: beginRawString
     - include: beginCharLiteral
+    - include: function
     - include: beginNamespace
 
   beginLineComment:
@@ -201,6 +202,13 @@ contexts:
     - match: "'"
       scope: punctuation.definition.string.end.c++
       pop: true
+
+  # TODO: match template functions
+  # TODO: match comment between name and paren?
+  function:
+    - match: ({{name}})(?=(?:::{{name}})*\s*\()
+      captures:
+        1: entity.name.function.c++
 
   beginNamespace:
     - match: \bnamespace\b

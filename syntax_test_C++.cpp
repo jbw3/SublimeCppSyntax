@@ -261,3 +261,35 @@ void supportConstants()
     std::cout << __LINE__ << '\n';
     //           ^ support.constant
 }
+
+void numericLiterals()
+{
+    int dec = 1234567890;
+    //        ^ constant.numeric
+
+    int oct = 01234567;
+    //        ^ constant.numeric
+
+    int hex = 0x1234567890ABCDEF;
+    //        ^ constant.numeric
+
+    int bin = 0b100110;
+    //        ^ constant.numeric
+
+    int sep = 1'234;
+    //        ^ constant.numeric
+    //         ^ constant.numeric
+    //          ^ constant.numeric
+
+    float fixed = 123.456;
+    //            ^ constant.numeric
+
+    float sci1 = 1.23e10;
+    //           ^ constant.numeric
+
+    float sci2 = 14.23e+14;
+    //           ^ constant.numeric
+
+    float sci3 = 18e-12;
+    //           ^ constant.numeric
+}

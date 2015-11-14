@@ -24,6 +24,7 @@ contexts:
     - include: supportTypes
     - include: supportConstants
     - include: languageVariables
+    - include: numericLiterals
     - include: beginString
     - include: beginRawString
     - include: beginCharLiteral
@@ -73,6 +74,7 @@ contexts:
     - match: (?=#)
       push: preprocessor
 
+  # TODO: don't include nonPreproc in warning or error (but do include comments)
   preprocessor:
     - match: '#\s*(define|elif|else|endif|error|if|ifdef|ifndef|line|pragma|undef|warning)\b'
       captures:
@@ -149,6 +151,11 @@ contexts:
   languageVariables:
     - match: \bthis\b
       scope: variable.language.c++
+
+  # TODO: should numbers like "1f" be highlighted?
+  numericLiterals:
+    - match: (?<!['\.])(?:(?:(?:\b\d(?:[\d']*\d)?\.\d(?:[\d']*\d)?|\B\.\d(?:[\d']*\d)?)(?:[Ee][+-]?\d(?:[\d']*\d)?)?(?:[fFlL]|(?:i[fl]?|h|min|[mun]?s|_\w*))?\b|(?:\b\d(?:[\d']*\d)?\.)(?:\B|(?:[fFlL]|(?:i[fl]?|h|min|[mun]?s|_\w*))\b|(?:[Ee][+-]?\d(?:[\d']*\d)?)(?:[fFlL]|(?:i[fl]?|h|min|[mun]?s|_\w*))?\b)|\b\d(?:[\d']*\d)?(?:[Ee][+-]?\d(?:[\d']*\d)?)(?:[fFlL]|(?:i[fl]?|h|min|[mun]?s|_\w*))?\b)|\b(?:(?:[1-9](?:[\d']*\d)?|0(?:[0-7']*[0-7])?|0[Xx][\da-fA-F](?:[\da-fA-F']*[\da-fA-F])?|0[Bb][01](?:[01']*[01])?)(?:(?:l{1,2}|L{1,2})[uU]?|[uU](?:l{0,2}|L{0,2})|(?:i[fl]?|h|min|[mun]?s|_\w*))?)\b)(?!\.)
+      scope: constant.numeric.c++
 
   escapeChars:
     - match: \\(?:[\'"\?\\abfnrtv]|[0-7]{1,3}|x[\da-fA-F]+|u[\da-fA-F]{4}|U[\da-fA-F]{8})

@@ -332,3 +332,13 @@ void x::y::z::functionInNamespace()
 //            ^ entity.name.function
 {
 }
+
+class BaseClass
+{
+    virtual void doSomething() const = 0;
+};
+
+class DerivedClass : public BaseClass
+{
+    virtual void doSomething() const override final;
+};

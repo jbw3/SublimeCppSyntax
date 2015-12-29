@@ -12,7 +12,7 @@ contexts:
     - include: beginPreprocessor
     - include: nonPreproc
 
-  nonPreproc:
+  basic:
     - include: beginLineComment
     - include: beginBlockComment
     - include: controlKeywords
@@ -28,8 +28,13 @@ contexts:
     - include: beginString
     - include: beginRawString
     - include: beginCharLiteral
+
+  nonPreproc:
+    - include: basic
     - include: function
+    # - include: afterFunction
     - include: beginNamespace
+    - include: beginClass
 
   beginLineComment:
     - match: (?=//)
@@ -210,6 +215,15 @@ contexts:
       captures:
         1: entity.name.function.c++
 
+  # TODO: this is not being used yet
+  afterFunction:
+    - match: \)
+      push:
+        - match: \b(?:final|override)\b
+          scope: keyword.control.c++
+        - match: (?=;|{)
+          pop: true
+
   beginNamespace:
     - match: \bnamespace\b
       captures:
@@ -222,4 +236,24 @@ contexts:
     - include: beginLineComment
     - include: beginBlockComment
     - match: (?=;|{)
+      pop: true
+
+  # TODO: class needs improvment
+  # TODO: fix struct in function args
+  beginClass:
+    - match: \b(class|struct|union)\b
+      captures:
+        1: storage.type.c++
+      push: class
+
+  class:
+    - meta_scope: meta.class-struct-block.c++
+    - match: \b{{name}}\b
+      scope: entity.name.type.c++
+    - match: '{'
+      push:
+        - include: nonPreproc
+        - match: '}'
+          pop: true
+    - match: ;
       pop: true

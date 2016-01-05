@@ -397,3 +397,13 @@ enum ETest : unsigned int /* comment */ // comment
     eTwo   = 2,
     eThree = 3,
 };
+
+[ [ deprecated("Don't use this!!!") noreturn ] ]
+// <- meta.attribute
+//  ^ keyword.other
+//              ^ string.quoted.double
+//                                  ^ keyword.other
+void attTest()
+{
+    throw;
+}

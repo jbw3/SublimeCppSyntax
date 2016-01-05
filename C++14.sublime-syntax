@@ -11,6 +11,7 @@ contexts:
   main:
     - include: beginPreprocessor
     - include: nonPreproc
+    - include: beginAttributes
 
   basic:
     - include: beginLineComment
@@ -284,4 +285,19 @@ contexts:
         - match: (?=;|{)
           pop: true
     - match: (?=;|{)
+      pop: true
+
+  beginAttributes:
+    - match: \[\s*\[
+      push: attributes
+
+  attributes:
+    - meta_scope: meta.attribute.c++
+    - match: \b(?:carries_dependency|deprecated|noreturn)\b
+      scope: keyword.other.c++
+    - include: beginLineComment
+    - include: beginBlockComment
+    - include: beginString
+    - include: beginRawString
+    - match: \]\s*\]
       pop: true

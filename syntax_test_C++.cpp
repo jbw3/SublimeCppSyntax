@@ -333,7 +333,10 @@ void x::y::z::functionInNamespace()
 {
 }
 
-class BaseClass
+class BaseClass // comment
+// <- storage.type
+//    ^ entity.name.type
+//              ^ comment.line
 {
     virtual void doSomething() const = 0;
 };
@@ -341,4 +344,56 @@ class BaseClass
 class DerivedClass : public BaseClass
 {
     virtual void doSomething() const override final;
+};
+
+enum ETest /* comment */ // comment
+// <- storage.type
+//   ^ entity.name.type
+//         ^ comment.block
+//                       ^ comment.line
+{
+    eOne   = 1,
+//           ^ constant.numeric
+    eTwo   = 2,
+    eThree = 3,
+};
+
+enum struct ETest /* comment */ // comment
+// <- storage.type
+//   ^ storage.type
+//          ^ entity.name.type
+//                ^ comment.block
+//                              ^ comment.line
+{
+    eOne   = 1,
+//           ^ constant.numeric
+    eTwo   = 2,
+    eThree = 3,
+};
+
+enum class ETest /* comment */ // comment
+// <- storage.type
+//   ^ storage.type
+//         ^ entity.name.type
+//               ^ comment.block
+//                             ^ comment.line
+{
+    eOne   = 1,
+//           ^ constant.numeric
+    eTwo   = 2,
+    eThree = 3,
+};
+
+enum ETest : unsigned int /* comment */ // comment
+// <- storage.type
+//   ^ entity.name.type
+//           ^ storage.type
+//                    ^ storage.type
+//                        ^ comment.block
+//                                      ^ comment.line
+{
+    eOne   = 1,
+//           ^ constant.numeric
+    eTwo   = 2,
+    eThree = 3,
 };

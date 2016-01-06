@@ -255,7 +255,7 @@ contexts:
       scope: entity.name.type.c++
     - match: '{'
       push:
-        - include: nonPreproc
+        - include: main
         - match: '}'
           pop: true
     - match: ;
